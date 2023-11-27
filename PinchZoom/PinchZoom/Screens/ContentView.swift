@@ -59,14 +59,62 @@ struct ContentView: View {
             .onAppear {
                 isAnimating = true
             }
-        } //: nav
+            // MARK: - INFO PANEL
+            .overlay(alignment: .top) {
+                InfoPanelView(scale: imageScale, offset: imageOffset)
+                    .padding(.horizontal)
+                    .padding(.top, 50)
+            }
+            // MARK: - CONTROLS
+            .overlay(alignment: .bottom) {
+                Group {
+                    HStack {
+                        // SCALE DOWN
+                        Button {
+                            withAnimation(.spring()) {
+                                if imageScale > 1 {
+                                    imageScale -= 1
 
-        // MARK: - INFO PANEL
-        .overlay(alignment: .top) {
-            InfoPanelView(scale: imageScale, offset: imageOffset)
-                .padding(.horizontal)
-                .padding(.top, 50)
-        }
+                                    if imageScale <= 1 {
+                                        resetImageState()
+                                    }
+                                }
+                            }
+                        } label: {
+                            ControlImageView(icon: "minus.magnifyingglass")
+                        }
+
+                        // RESET
+                        Button {
+                            resetImageState()
+                        } label: {
+                            ControlImageView(icon: "arrow.up.left.and.down.right.magnifyingglass")
+                        }
+
+                        // SCALE UP
+                        Button {
+                            withAnimation(.spring()) {
+                                if imageScale < 5 {
+                                    imageScale += 1
+
+                                    if imageScale > 5 {
+                                        imageScale = 5
+                                    }
+                                }
+                            }
+                        } label: {
+                            ControlImageView(icon: "plus.magnifyingglass")
+                        }
+                    }
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 20)
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(12)
+                    .opacity(isAnimating ? 1 : 0)
+                }
+                .padding(.bottom, 30)
+            }
+        } //: nav
     }
 
     private func resetImageState() {
